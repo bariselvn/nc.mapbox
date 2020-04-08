@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Display map navigation controls</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #723122;
+        }
+
+        .coordinates {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 11px;
+            line-height: 18px;
+            border-radius: 3px;
+            display: none;
+        }
+
+        .boxdraw {
+            background: rgba(56, 135, 190, 0.1);
+            border: 2px solid #3887be;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map" style="background-color: #723122"></div>
+    <pre id="coordinates" class="coordinates"></pre>
+    <script>
+
+        var coordinates = document.getElementById('coordinates');
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYmFyaXNlbHZuIiwiYSI6ImNrOG9jc2I2bTAwYXUzb3B0OGNzZ3Z6cWQifQ.f5fjA-rvOJ19p2aWkpUIcA';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [29.109221307851907, 41.04094461077883], // starting position
+            zoom: 11, // starting zoom
+
+        });
+        var marker = new mapboxgl.Marker({
+            draggable: true,
+            title: 'ESNAF CADDESİ PRESTİJ CADDE YAPIM İŞİ'
+        })
+            .setLngLat([29.083085529636833, 40.997587759677245])
+            .addTo(map);
+        function onDragEnd() {
+            var lngLat = marker.getLngLat();
+            coordinates.style.display = 'block';
+            coordinates.innerHTML =
+                'Longitude: ' + lngLat.lng + '<br />Latitude: ' + lngLat.lat;
+        }
+        marker.on('dragend', onDragEnd);
+        map.addControl(new mapboxgl.NavigationControl());
+        var zoomThreshold = 4;
+
+        map.on('load', function () {
+            map.addSource('population', {
+                'type': 'vector',
+                'url': 'mapbox://mapbox.660ui7x6'
+            });
+            map.addLayer(
+                {
+                    'id': 'layer-mahalle-fill',
+                    'type': 'fill',
+                    'source': 'source-mahalle',
+                    'paint': {
+                        'fill-color': 'white',
+                        'fill-opacity': 0.5
+                    }
+                },
+
+            );
+
+        });
+
+
+
+    </script>
+</body>
+
+</html>
